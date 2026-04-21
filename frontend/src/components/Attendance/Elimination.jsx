@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Eliminations.css';
+import './Elimination.css';
 
 const Eliminations = () => {
   const [activeTab, setActiveTab] = useState('en-cours');

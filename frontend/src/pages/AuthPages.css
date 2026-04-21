@@ -1,0 +1,123 @@
+/* pages/AuthPages.css */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f4f7fc 0%, #e2edf2 100%);
+  padding: 1.5rem;
+}
+
+.auth-card {
+  background: white;
+  border-radius: 28px;
+  padding: 2rem 2rem 2.5rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(26, 75, 140, 0.1);
+}
+
+.auth-card h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a4b8c;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: #5a6e8a;
+  margin-bottom: 1.8rem;
+  font-size: 0.9rem;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #1e2a3e;
+  font-size: 0.85rem;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2edf2;
+  border-radius: 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  background: #fefefe;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #1a4b8c;
+  box-shadow: 0 0 0 3px rgba(26, 75, 140, 0.1);
+}
+
+.auth-btn {
+  width: 100%;
+  background: #1a4b8c;
+  color: white;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 40px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+
+.auth-btn:hover {
+  background: #0f3b6f;
+}
+
+.auth-error {
+  background: #fbeae8;
+  color: #c0392b;
+  padding: 0.75rem;
+  border-radius: 16px;
+  margin-bottom: 1.2rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.auth-footer a {
+  color: #1a4b8c;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.demo-accounts {
+  margin-top: 1.8rem;
+  background: #f4f7fc;
+  padding: 0.8rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  color: #5a6e8a;
+}
+
+.demo-accounts p {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.demo-accounts ul {
+  margin-left: 1.2rem;
+}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './JustificatifsEtudiant.css';
+import './JustificationEtudiant.css';
 
 const JustificatifsEtudiant = () => {
   const [activeTab, setActiveTab] = useState('tous');

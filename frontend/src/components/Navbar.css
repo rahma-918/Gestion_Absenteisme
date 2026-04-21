@@ -1,0 +1,50 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #1a4b8c; /* couleur ISSAT */
+  padding: 0.8rem 2rem;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.nav-brand {
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.3px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.nav-links a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.nav-user {
+  background: rgba(255,255,255,0.2);
+  padding: 0.3rem 0.8rem;
+  border-radius: 40px;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 40px;
+  cursor: pointer;
+  font-weight: 500;
+}

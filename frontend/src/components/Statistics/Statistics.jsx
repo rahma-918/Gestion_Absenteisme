@@ -10,7 +10,7 @@ const Statistics = () => {
   const overview = {
     globalRate: 91.2,
     trendRate: '+2.3% vs mois dernier',
-    sessionsCount: 48,
+    sessionsCount: 48 ,
     totalAbsences: 142,
     absencesTrend: '-18 vs mois dernier',
     atRiskStudents: 12,
