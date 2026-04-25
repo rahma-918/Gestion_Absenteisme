@@ -15,6 +15,7 @@ import DashboardEtudiant from './components/Dashboard/DashboardEtudiant';
 // Autres composants (appel, statistiques, justificatifs...)
 import Attendance from './components/Attendance/Attendance';
 import Statistics from './components/Statistics/Statistics';
+import StatisticsAdmin from './components/Statistics/Statisticsadmin';
 import Justifications from './components/Justifications/Justifications';
 import Eliminations from './components/Attendance/Elimination';
 import JustificatifsEtudiant from './components/Justifications/JustificationEtudiant';
@@ -60,7 +61,7 @@ function App() {
 
                     {/* Admin */}
                     <Route path="/dashboard-admin" element={<DashboardAdmin />} />
-
+                    <Route path="/statistiques-admin" element={<StatisticsAdmin />} />
                     {/* Étudiant */}
                     <Route path="/dashboard-etudiant" element={<DashboardEtudiant />} />
                     <Route path="/justificatifs-etudiant" element={<JustificatifsEtudiant />} />

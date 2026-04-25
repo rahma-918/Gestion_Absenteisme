@@ -150,7 +150,6 @@ const Attendance = () => {
         {/* Controls */}
         <div className="controls-bar">
           <div className="search-box">
-            <span className="search-icon">🔍</span>
             <input
               type="text"
               placeholder="Rechercher un étudiant..."

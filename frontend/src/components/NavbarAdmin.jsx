@@ -9,7 +9,7 @@ const NavbarAdmin = () => {
       <div className="nav-brand">🏛️ GestionAbsence - Administration</div>
       <div className="nav-links">
         <Link to="/dashboard-admin">Tableau de bord admin</Link>
-        <Link to="/statistiques">Statistiques globales</Link>
+        <Link to="/statistiques-admin">Statistiques globales</Link>
         <Link to="/eliminations">Gérer éliminations</Link>
       </div>
       <div className="nav-user">Mme. Fatma Mansouri</div>
