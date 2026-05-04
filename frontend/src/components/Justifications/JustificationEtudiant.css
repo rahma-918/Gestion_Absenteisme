@@ -1,27 +1,32 @@
 /* JustificationEtudiant.css */
 @import url('../shared-theme.css');
 
-/* Absences to justify */
+/* ── ABSENCES TO JUSTIFY ── */
 .absences-list { display: flex; flex-direction: column; gap: 0.75rem; }
 
 .absence-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.85rem 1rem;
-  background: var(--warning-bg);
-  border: 1.5px solid rgba(232,155,26,0.3);
-  border-radius: var(--r-md);
-  transition: box-shadow 0.12s;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, rgba(255,251,235,0.8), rgba(254,249,195,0.5));
+  border: 1.5px solid rgba(217,119,6,0.25);
+  border-radius: var(--r-lg);
+  transition: all var(--t-base);
+  gap: 1rem;
 }
 
-.absence-card:hover { box-shadow: var(--shadow-sm); }
+.absence-card:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: rgba(217,119,6,0.4);
+}
 
 .absence-info h4 {
-  font-size: 0.85rem;
+  font-size: 0.87rem;
   font-weight: 700;
   margin-bottom: 0.3rem;
   color: var(--text);
+  font-family: 'Outfit', sans-serif;
 }
 
 .absence-meta {
@@ -29,138 +34,216 @@
   gap: 1.25rem;
   font-size: 0.72rem;
   color: var(--text-muted);
+  flex-wrap: wrap;
 }
 
-/* Justificatifs list */
+/* ── JUSTIFICATIFS LIST ── */
 .justificatifs-list { display: flex; flex-direction: column; gap: 1rem; }
 
 .justificatif-card {
   background: var(--card);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-xl);
   border: 1.5px solid var(--border);
   box-shadow: var(--shadow-xs);
-  transition: box-shadow 0.15s;
+  transition: all var(--t-base);
   overflow: hidden;
 }
 
 .justificatif-card:hover { box-shadow: var(--shadow-md); }
-.justificatif-card.pending  { border-color: rgba(232,155,26,0.4); }
-.justificatif-card.approved { border-color: rgba(24,167,106,0.4); }
-.justificatif-card.rejected { border-color: rgba(225,75,75,0.4);  }
+.justificatif-card.pending  { border-color: rgba(217,119,6,0.3); }
+.justificatif-card.approved { border-color: rgba(5,150,105,0.3); }
+.justificatif-card.rejected { border-color: rgba(220,38,38,0.3); }
 
+/* ── JUSTIF HEADER ── */
 .justif-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 1rem 1.25rem;
+  padding: 1.1rem 1.5rem;
   border-bottom: 1px solid var(--divider);
+  background: var(--bg-subtle);
+  gap: 1rem;
 }
 
-.justif-header h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.3rem; }
+.justif-header h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  font-family: 'Outfit', sans-serif;
+}
 
 .justif-meta {
   display: flex;
-  gap: 1.25rem;
+  gap: 1rem;
   font-size: 0.72rem;
-  color: var(--text-muted);
+  color: var(--text-faint);
+  flex-wrap: wrap;
 }
 
-/* Justif body */
-.justif-body { padding: 1rem 1.25rem; display: flex; flex-direction: column; gap: 0.85rem; }
+/* ── JUSTIF BODY ── */
+.justif-body {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
 .justif-motif {
-  background: var(--bg);
-  padding: 0.85rem 1rem;
-  border-radius: var(--r-md);
+  background: var(--bg-subtle);
+  padding: 0.9rem 1.1rem;
+  border-radius: var(--r-lg);
   border: 1px solid var(--border);
 }
 
 .justif-motif strong {
   display: block;
-  margin-bottom: 0.35rem;
-  font-size: 0.68rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.62rem;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
+  letter-spacing: 0.07em;
+  color: var(--text-faint);
   font-weight: 700;
 }
 
-.justif-motif p { font-size: 0.82rem; color: var(--text); line-height: 1.55; }
+.justif-motif p { font-size: 0.83rem; color: var(--text); line-height: 1.6; }
 
+/* ── JUSTIF FICHIER ── */
 .justif-fichier {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  padding: 0.85rem;
-  background: #fff;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  background: var(--card);
   border: 1.5px dashed var(--border);
-  border-radius: var(--r-md);
+  border-radius: var(--r-lg);
   cursor: pointer;
-  transition: border-color 0.12s;
+  transition: all var(--t-base);
 }
 
-.justif-fichier:hover { border-color: var(--brand); }
+.justif-fichier:hover {
+  border-color: var(--indigo-300);
+  background: var(--indigo-50);
+}
 
-.fichier-icon { font-size: 1.5rem; }
-.fichier-info { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; }
-.fichier-nom  { font-size: 0.82rem; font-weight: 600; color: var(--text); }
-.fichier-size { font-size: 0.7rem; color: var(--text-muted); }
+.fichier-icon { font-size: 1.6rem; flex-shrink: 0; }
+
+.fichier-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.fichier-nom {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fichier-size { font-size: 0.7rem; color: var(--text-faint); }
 
 .btn-download {
-  background: var(--bg);
-  color: var(--brand);
-  padding: 0.4rem 0.85rem;
+  background: var(--bg-subtle);
+  color: var(--indigo-600);
+  padding: 0.42rem 0.9rem;
   border-radius: var(--r-md);
-  border: 1px solid var(--border);
-  font-weight: 600;
+  border: 1.5px solid var(--indigo-100);
+  font-weight: 700;
   cursor: pointer;
   font-size: 0.75rem;
-  transition: all 0.12s;
+  transition: all var(--t-base);
   font-family: inherit;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.btn-download:hover { background: var(--brand); color: #fff; border-color: var(--brand); }
+.btn-download:hover {
+  background: var(--indigo-600);
+  color: #fff;
+  border-color: var(--indigo-600);
+}
 
+/* ── JUSTIF COMMENTAIRE ── */
 .justif-commentaire {
-  padding: 0.85rem 1rem;
-  border-radius: var(--r-md);
+  padding: 0.9rem 1.1rem;
+  border-radius: var(--r-lg);
   border-left: 3px solid;
 }
 
-.justif-commentaire.approved { background: var(--success-bg); border-color: var(--success); }
-.justif-commentaire.rejected { background: var(--danger-bg);  border-color: var(--danger); }
-
-.justif-commentaire strong { display: block; margin-bottom: 0.35rem; font-size: 0.75rem; color: var(--text-secondary); }
-.justif-commentaire p { font-size: 0.8rem; color: var(--text); }
-
-/* Modal */
-.absence-details {
-  background: var(--bg);
-  padding: 0.85rem;
-  border-radius: var(--r-md);
-  border: 1px solid var(--border);
-  margin-bottom: 1.1rem;
+.justif-commentaire.approved {
+  background: var(--success-bg);
+  border-color: var(--success);
 }
 
-.absence-details h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.3rem; }
-.absence-details p  { font-size: 0.78rem; color: var(--text-muted); }
+.justif-commentaire.rejected {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+}
+
+.justif-commentaire strong {
+  display: block;
+  margin-bottom: 0.38rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+
+.justif-commentaire p { font-size: 0.82rem; color: var(--text); line-height: 1.55; }
+
+/* ── MODAL SPECIFICS ── */
+.absence-details {
+  background: var(--bg-subtle);
+  padding: 0.9rem 1rem;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+}
+
+.absence-details h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  font-family: 'Outfit', sans-serif;
+}
+
+.absence-details p { font-size: 0.78rem; color: var(--text-muted); }
 
 .file-upload {
   border: 1.5px dashed var(--border);
-  border-radius: var(--r-md);
-  padding: 1rem;
+  border-radius: var(--r-lg);
+  padding: 1.1rem;
   text-align: center;
-  transition: all 0.12s;
+  transition: all var(--t-base);
+  background: var(--bg-subtle);
 }
 
-.file-upload:hover { border-color: var(--brand); background: var(--brand-light); }
-.file-upload input[type="file"] { margin-bottom: 0.4rem; font-size: 0.78rem; }
+.file-upload:hover {
+  border-color: var(--indigo-300);
+  background: var(--indigo-50);
+}
 
-.file-help { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.3rem; }
+.file-upload input[type="file"] {
+  margin-bottom: 0.5rem;
+  font-size: 0.78rem;
+  width: auto;
+  display: block;
+  margin: 0 auto 0.5rem;
+}
+
+.file-help {
+  font-size: 0.72rem;
+  color: var(--text-faint);
+  margin-top: 0.35rem;
+}
 
 @media (max-width: 768px) {
-  .absence-card { flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+  .absence-card { flex-direction: column; gap: 0.85rem; align-items: flex-start; }
   .justif-header { flex-direction: column; gap: 0.75rem; }
   .justif-meta { flex-direction: column; gap: 0.25rem; }
   .justif-fichier { flex-wrap: wrap; }

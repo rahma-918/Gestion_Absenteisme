@@ -80,23 +80,42 @@ mongoengine.connect(
     alias="default",
 )
 
+AUTHENTICATION_BACKENDS = [
+    'apps.accounts.backends.MongoEngineAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',  # gardé pour l'admin SQL
+]
+
 # ── REST FRAMEWORK ─────────────────────────────────────────────
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.BasicAuthentication",
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'apps.accounts.authentication.MongoJWTAuthentication',
     ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
     ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 20,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
 }
 
+# ── SIMPLE JWT ────────────────────────────────────────────────
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTHENTICATION_BACKEND': 'apps.accounts.backends.MongoEngineAuthBackend',
+}
 # ── CORS ───────────────────────────────────────────────────────
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",    # React Vite
     "http://localhost:3000",
+    "http://localhost:5174",
 ]
 
 # ── INTERNATIONALISATION ───────────────────────────────────────
@@ -112,3 +131,4 @@ MEDIA_URL    = "/media/"
 MEDIA_ROOT   = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

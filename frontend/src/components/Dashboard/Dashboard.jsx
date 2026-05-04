@@ -1,136 +1,139 @@
-import React from 'react';
+// components/Dashboard/Dashboard.jsx
+import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 import './Dashboard.css';
 
 const Dashboard = () => {
-  // Données statiques (interface inchangée)
-  const stats = [
-    {
-      value: '4',
-      label: 'Groupes assignés',
-      icon: '👥',
-      iconClass: 'blue',
-      trend: '↑ 2 nouveaux ce semestre',
-      trendClass: 'trend-up'
-    },
-    {
-      value: '156',
-      label: 'Étudiants total',
-      icon: '🎓',
-      iconClass: 'green',
-      trend: '↑ +8 depuis début du semestre',
-      trendClass: 'trend-up'
-    },
-    {
-      value: '91.2%',
-      label: 'Taux de présence moyen',
-      icon: '✓',
-      iconClass: 'green',
-      trend: '↑ +2.3% vs mois dernier',
-      trendClass: 'trend-up'
-    },
-    {
-      value: '12',
-      label: 'Alertes actives',
-      icon: '⚠️',
-      iconClass: 'orange',
-      trend: '↓ -3 depuis la semaine dernière',
-      trendClass: 'trend-down'
-    }
-  ];
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const sessionListRef = useRef(null);
+  const [chartData, setChartData] = useState({ labels: [], values: [] });
+  const [chartLoading, setChartLoading] = useState(true);
 
-  const sessions = [
-    {
-      title: 'Algorithmique Avancée - TP',
-      date: '📅 Aujourd\'hui, 10:00 - 12:00',
-      group: '👥 Groupe 2A-INFO',
-      students: '👤 38 étudiants',
-      badge: 'success',
-      badgeText: 'Appel effectué'
-    },
-    {
-      title: 'Base de Données - Cours',
-      date: '📅 Hier, 14:00 - 16:00',
-      group: '👥 Groupe 1A-INFO',
-      students: '👤 42 étudiants',
-      badge: 'success',
-      badgeText: 'Appel effectué'
-    },
-    {
-      title: 'Programmation Web - TD',
-      date: '📅 22 Mars, 08:00 - 10:00',
-      group: '👥 Groupe 3A-INFO',
-      students: '👤 35 étudiants',
-      badge: 'warning',
-      badgeText: 'En attente'
-    },
-    {
-      title: 'Sécurité Informatique - Cours',
-      date: '📅 21 Mars, 10:00 - 12:00',
-      group: '👥 Groupe 2A-INFO',
-      students: '👤 41 étudiants',
-      badge: 'success',
-      badgeText: 'Appel effectué'
-    }
-  ];
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await axios.get('/api/enseignant/dashboard/');
+        setDashboardData(response.data);
+      } catch (err) {
+        setError(err.response?.data?.error || 'Erreur de chargement');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboard();
 
-  const quickActions = [
-    {
-      icon: '✓',
-      title: 'Faire l\'appel',
-      description: 'Enregistrer les présences'
-    },
-    {
-      icon: '📊',
-      title: 'Statistiques',
-      description: 'Voir les rapports détaillés'
-    },
-    {
-      icon: '📄',
-      title: 'Justificatifs',
-      description: '8 en attente de validation'
-    },
-    {
-      icon: '⚠️',
-      title: 'Alertes',
-      description: '12 étudiants à risque'
-    }
-  ];
+    const fetchChartData = async () => {
+      try {
+        const response = await axios.get('/api/enseignant/attendance-evolution/');
+        setChartData(response.data);
+      } catch (err) {
+        console.error("Erreur chargement graphique", err);
+        setChartData({ labels: [], values: [] });
+      } finally {
+        setChartLoading(false);
+      }
+    };
+    fetchChartData();
+  }, []);
 
-  // Handlers (à connecter plus tard)
+  const chartDataConfig = {
+    labels: chartData.labels,
+    datasets: [
+      {
+        label: "Taux de présence (%)",
+        data: chartData.values,
+        borderColor: "rgb(75, 192, 192)",
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        tension: 0.3,
+        fill: true,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: "top" },
+      title: { display: false },
+    },
+    scales: {
+      y: {
+        min: 0,
+        max: 100,
+        ticks: { callback: (value) => `${value}%` },
+      },
+    },
+  };
+
   const handleNewSession = () => {
     console.log('Nouvelle séance');
   };
 
-  const handleAction = (action) => {
-    console.log(`Action: ${action}`);
+  const handleSessionClick = (session) => {
+    if (session && session.id) {
+      navigate(`/appel/${session.id}`);
+    } else {
+      console.error('ID de séance manquant', session);
+    }
   };
 
-  const handleSessionClick = (session) => {
-    console.log('Séance cliquée:', session.title);
+  const handleAction = (action) => {
+    if (action.title === "Faire l'appel") {
+      if (sessionListRef.current) {
+        sessionListRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        sessionListRef.current.style.transition = 'background-color 0.5s';
+        sessionListRef.current.style.backgroundColor = '#fff3cd';
+        setTimeout(() => {
+          if (sessionListRef.current) sessionListRef.current.style.backgroundColor = '';
+        }, 1500);
+      }
+    } else if (action.link) {
+      navigate(action.link);
+    }
   };
+
+  if (loading) return <div className="loading">Chargement du tableau de bord...</div>;
+  if (error) return <div className="error">Erreur : {error}</div>;
+
+  const { stats, sessions, quickActions, enseignant, justificatifsRecents } = dashboardData;
 
   return (
     <>
-      {/* Header */}
       <div className="header">
-        <div className="logo">
-          📚 GestionAbsence
-        </div>
+        <div className="logo">📚 GestionAbsence</div>
         <div className="user-info">
           <div>
-            <div className="user-name">Dr. Ahmed Ben Salem</div>
-            <div className="user-role">Enseignant - Département Informatique</div>
+            <div className="user-name">{enseignant.nom_complet}</div>
+            <div className="user-role">Enseignant - {enseignant.specialite || 'Département'}</div>
           </div>
-          <div className="user-avatar">AB</div>
+          <div className="user-avatar">{enseignant.nom_complet.charAt(0)}</div>
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="container">
         <h1 className="page-title">Tableau de Bord</h1>
         <p className="page-subtitle">Vue d'ensemble de vos groupes et statistiques d'assiduité</p>
 
-        {/* Stats Cards */}
+        {/* KPI cards */}
         <div className="stats-grid">
           {stats.map((stat, idx) => (
             <div className="stat-card" key={idx}>
@@ -146,20 +149,17 @@ const Dashboard = () => {
           ))}
         </div>
 
-        {/* Main Content Grid */}
+        {/* Main 2‑column layout */}
         <div className="content-grid">
-          {/* Recent Sessions */}
-          <div className="card">
+          {/* Left column : Sessions récentes */}
+          <div className="card" ref={sessionListRef}>
             <div className="card-header">
               <h3 className="card-title">Séances récentes</h3>
-              <button className="btn-primary" onClick={handleNewSession}>
-                + Nouvelle séance
-              </button>
             </div>
             <div className="session-list">
               {sessions.map((session, idx) => (
-                <div 
-                  className="session-item" 
+                <div
+                  className="session-item"
                   key={idx}
                   onClick={() => handleSessionClick(session)}
                 >
@@ -179,18 +179,17 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Quick Actions */}
+          {/* Right column : Actions rapides + Justificatifs en attente */}
           <div>
+            {/* Actions rapides */}
             <div className="card">
-              <h3 className="card-title" style={{ marginBottom: '1rem' }}>
-                Actions rapides
-              </h3>
+              <h3 className="card-title">Actions rapides</h3>
               <div className="quick-actions">
                 {quickActions.map((action, idx) => (
-                  <button 
-                    className="action-btn" 
+                  <button
+                    className="action-btn"
                     key={idx}
-                    onClick={() => handleAction(action.title)}
+                    onClick={() => handleAction(action)}
                   >
                     <div className="action-icon">{action.icon}</div>
                     <div className="action-content">
@@ -201,16 +200,63 @@ const Dashboard = () => {
                 ))}
               </div>
             </div>
+
+            {/* Justificatifs en attente (nouvelle section) */}
+            <div className="card" style={{ marginTop: '1.5rem' }}>
+              <div className="card-header">
+                <h3 className="card-title">
+                  📄 Justificatifs en attente
+                  <span className="count-badge">{justificatifsRecents?.length || 0}</span>
+                </h3>
+              </div>
+              <div className="justifs-list">
+                {justificatifsRecents && justificatifsRecents.length > 0 ? (
+                  justificatifsRecents.map((justif, idx) => (
+                    <div className="justif-item" key={idx}>
+                      <div className="justif-info">
+                        <h4>{justif.etudiant}</h4>
+                        <p>{justif.numero}</p>
+                        <p className="justif-matiere">{justif.matiere}</p>
+                        <p className="justif-date">Déposé le {justif.dateDepot}</p>
+                      </div>
+                      <button
+                        className="btn-view"
+                        onClick={() => navigate('/justificatifs')}
+                      >
+                        Voir
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="empty-state">Aucun justificatif en attente</div>
+                )}
+                <div className="view-all" style={{ marginTop: '0.75rem', textAlign: 'center' }}>
+                  <button
+                    className="btn-link"
+                    onClick={() => navigate('/justificatifs')}
+                    style={{ background: 'none', border: 'none', color: 'var(--brand)', cursor: 'pointer' }}
+                  >
+                    Voir tous les justificatifs →
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Chart Section */}
+        {/* Graphique évolution assiduité */}
         <div className="card">
           <h3 className="card-title" style={{ marginBottom: '1rem' }}>
-            Évolution de l'assiduité - Mars 2026
+            Évolution de l'assiduité (taux de présence hebdomadaire)
           </h3>
-          <div className="chart-container">
-            📈 Graphique d'évolution hebdomadaire (à implémenter avec Chart.js ou Recharts)
+          <div className="chart-container" style={{ height: '300px' }}>
+            {chartLoading ? (
+              <div>Chargement du graphique...</div>
+            ) : chartData.labels.length === 0 ? (
+              <div>Aucune donnée disponible pour le moment.</div>
+            ) : (
+              <Line data={chartDataConfig} options={chartOptions} />
+            )}
           </div>
         </div>
       </div>

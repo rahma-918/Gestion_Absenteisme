@@ -8,6 +8,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    cin: '',
     password: '',
     confirmPassword: '',
     role: 'etudiant', // par défaut étudiant
@@ -36,14 +37,12 @@ const Signup = () => {
       const user = await signup({
         name: formData.name,
         email: formData.email,
+        cin: formData.cin, 
         password: formData.password,
         role: formData.role,
         studentId: formData.role === 'etudiant' ? formData.studentId : undefined
       });
-      // Redirection après inscription
-      if (user.role === 'enseignant') navigate('/');
-      else if (user.role === 'admin') navigate('/dashboard-admin');
-      else navigate('/dashboard-etudiant');
+      navigate('/login');
     } catch (err) {
       setError(err.message);
     }
@@ -76,6 +75,17 @@ const Signup = () => {
               required
             />
           </div>
+          <div className="form-group">
+  <label>CIN (Carte d'Identité Nationale)</label>
+  <input
+    type="text"
+    name="cin"
+    value={formData.cin}
+    onChange={handleChange}
+    required
+    placeholder="ex: 12345678"
+  />
+</div>
           <div className="form-group">
             <label>Rôle</label>
             <select name="role" value={formData.role} onChange={handleChange}>

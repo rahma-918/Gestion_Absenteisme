@@ -1,152 +1,77 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 import './DashboardEtudiant.css';
 
 const DashboardEtudiant = () => {
-  // Données statiques
-  const stats = [
-    {
-      value: '94.5%',
-      label: 'Taux de présence global',
-      icon: '✓',
-      iconClass: 'green',
-      trend: 'Excellent niveau d\'assiduité',
-      trendClass: 'trend-up'
-    },
-    {
-      value: '8',
-      label: 'Matières suivies',
-      icon: '📚',
-      iconClass: 'blue',
-      trend: 'Ce semestre',
-      trendClass: 'trend-neutral'
-    },
-    {
-      value: '142',
-      label: 'Séances suivies',
-      icon: '📅',
-      iconClass: 'blue',
-      trend: 'Depuis le début du semestre',
-      trendClass: 'trend-neutral'
-    },
-    {
-      value: '8',
-      label: 'Absences totales',
-      icon: '⚠️',
-      iconClass: 'orange',
-      trend: '2 absences restantes avant seuil',
-      trendClass: 'trend-warning'
-    }
-  ];
-
-  const matieres = [
-    {
-      nom: 'Algorithmique Avancée',
-      code: 'INFO301',
-      nbSeances: 24,
-      nbAbsences: 2,
-      seuil: 3,
-      taux: 91.7,
-      status: 'ok'
-    },
-    {
-      nom: 'Base de Données',
-      code: 'INFO302',
-      nbSeances: 20,
-      nbAbsences: 1,
-      seuil: 3,
-      taux: 95.0,
-      status: 'ok'
-    },
-    {
-      nom: 'Programmation Web',
-      code: 'INFO303',
-      nbSeances: 18,
-      nbAbsences: 3,
-      seuil: 3,
-      taux: 83.3,
-      status: 'warning'
-    },
-    {
-      nom: 'Sécurité Informatique',
-      code: 'INFO304',
-      nbSeances: 16,
-      nbAbsences: 0,
-      seuil: 2,
-      taux: 100.0,
-      status: 'excellent'
-    }
-  ];
-
-  const alertes = [
-    {
-      type: 'warning',
-      matiere: 'Programmation Web',
-      message: 'Vous avez atteint le seuil d\'absence (3/3)',
-      date: 'Il y a 2 jours'
-    }
-  ];
-
-  const prochaineCours = [
-    {
-      matiere: 'Algorithmique Avancée',
-      type: 'TP',
-      date: 'Demain',
-      heure: '10:00 - 12:00',
-      salle: 'B204'
-    },
-    {
-      matiere: 'Base de Données',
-      type: 'Cours',
-      date: 'Jeudi 27 Mars',
-      heure: '14:00 - 16:00',
-      salle: 'Amphi A'
-    }
-  ];
-
-  // Handlers
-  const handleDeposerJustificatif = () => {
-    console.log('Déposer justificatif');
+  const { user } = useAuth();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+    const formatDateFrench = (isoDate) => {
+    if (!isoDate) return '';
+    const date = new Date(isoDate);
+    return date.toLocaleDateString('fr-FR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    });
   };
 
-  const handleVoirDetails = (matiere) => {
-    console.log('Voir détails:', matiere);
-  };
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await axios.get('/api/etudiant/dashboard/');
+        setDashboardData(response.data);
+      } catch (err) {
+        setError(err.response?.data?.error || 'Erreur de chargement');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboard();
+  }, []);
+
+  if (loading) return <div className="loading">Chargement de votre tableau de bord...</div>;
+  if (error) return <div className="error">Erreur : {error}</div>;
+
+  const { stats, matieres, alertes, prochains_cours } = dashboardData;
+
+  const handleDeposerJustificatif = () => console.log('Déposer justificatif');
+  const handleVoirDetails = (matiere) => console.log('Voir détails:', matiere);
 
   return (
     <>
-      {/* Header */}
+      {/* Header avec les infos utilisateur dynamiques */}
       <div className="header">
-        <div className="logo">
-          📚 GestionAbsence
-        </div>
+        <div className="logo">📚 GestionAbsence</div>
         <div className="user-info">
           <div>
-            <div className="user-name">Ahmed Ben Ali</div>
-            <div className="user-role">Étudiant - 2A INFO • 20210245</div>
+            <div className="user-name">{user?.nom_complet || user?.email}</div>
+            <div className="user-role">Étudiant</div>
           </div>
-          <div className="user-avatar">AB</div>
+          <div className="user-avatar">{user?.nom_complet?.charAt(0) || user?.email?.charAt(0)}</div>
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="container">
         <h1 className="page-title">Mon Tableau de Bord</h1>
         <p className="page-subtitle">Suivi de votre assiduité et de vos présences</p>
 
         {/* Alertes */}
-        {alertes.length > 0 && (
-          <div className="alert-banner warning">
+        {alertes.length > 0 && alertes.map((alerte, idx) => (
+          <div className="alert-banner warning" key={idx}>
             <div className="alert-icon">⚠️</div>
             <div className="alert-content">
-              <strong>{alertes[0].matiere}</strong> - {alertes[0].message}
+              <strong>{alerte.matiere}</strong> - {alerte.message}
             </div>
             <button className="btn-alert" onClick={handleDeposerJustificatif}>
               Déposer un justificatif
             </button>
           </div>
-        )}
+        ))}
 
-        {/* Stats Cards */}
+        {/* Statistiques */}
         <div className="stats-grid">
           {stats.map((stat, idx) => (
             <div className="stat-card" key={idx}>
@@ -162,9 +87,9 @@ const DashboardEtudiant = () => {
           ))}
         </div>
 
-        {/* Main Content Grid */}
+        {/* Grille principale */}
         <div className="content-grid">
-          {/* Mes Matières */}
+          {/* Matières */}
           <div className="card">
             <div className="card-header">
               <h3 className="card-title">Mes Matières</h3>
@@ -181,7 +106,6 @@ const DashboardEtudiant = () => {
                       <span className="taux-value">{matiere.taux}%</span>
                     </div>
                   </div>
-                  
                   <div className="matiere-details">
                     <div className="detail-item">
                       <span className="detail-label">Séances</span>
@@ -192,18 +116,10 @@ const DashboardEtudiant = () => {
                       <span className="detail-value">{matiere.nbAbsences}/{matiere.seuil}</span>
                     </div>
                   </div>
-
                   <div className="progress-bar">
-                    <div 
-                      className={`progress-fill ${matiere.status}`}
-                      style={{ width: `${matiere.taux}%` }}
-                    ></div>
+                    <div className={`progress-fill ${matiere.status}`} style={{ width: `${matiere.taux}%` }}></div>
                   </div>
-
-                  <button 
-                    className="btn-details"
-                    onClick={() => handleVoirDetails(matiere)}
-                  >
+                  <button className="btn-details" onClick={() => handleVoirDetails(matiere)}>
                     Voir détails
                   </button>
                 </div>
@@ -211,60 +127,27 @@ const DashboardEtudiant = () => {
             </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Sidebar : Prochains cours (uniquement) */}
           <div>
-            {/* Prochains Cours */}
-            <div className="card" style={{ marginBottom: '1.5rem' }}>
-              <h3 className="card-title" style={{ marginBottom: '1rem' }}>
-                Prochains cours
-              </h3>
+            <div className="card">
+              <h3 className="card-title">Prochains cours</h3>
               <div className="prochains-cours">
-                {prochaineCours.map((cours, idx) => (
-                  <div className="cours-item" key={idx}>
-                    <div className="cours-icon">📅</div>
-                    <div className="cours-info">
-                      <h4>{cours.matiere}</h4>
-                      <div className="cours-meta">
-                        <span>{cours.type}</span>
-                        <span>•</span>
-                        <span>{cours.date}</span>
-                      </div>
-                      <div className="cours-details">
-                        {cours.heure} • {cours.salle}
+                {prochains_cours.length === 0 ? (
+                  <p>Aucune séance programmée.</p>
+                ) : (
+                  prochains_cours.map((cours, idx) => (
+                    <div className="cours-item" key={idx}>
+                      <div className="cours-icon">📅</div>
+                      <div className="cours-info">
+                        <h4>{cours.matiere}</h4>
+                        <div className="cours-meta">
+                          <span>{cours.type}</span> • <span>{formatDateFrench(cours.date_iso)}</span>
+                        </div>
+                        <div className="cours-details">{cours.heure} • {cours.salle}</div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Actions Rapides */}
-            <div className="card">
-              <h3 className="card-title" style={{ marginBottom: '1rem' }}>
-                Actions rapides
-              </h3>
-              <div className="quick-actions">
-                <button className="action-btn">
-                  <div className="action-icon">📄</div>
-                  <div className="action-content">
-                    <h4>Mes justificatifs</h4>
-                    <p>Gérer mes demandes</p>
-                  </div>
-                </button>
-                <button className="action-btn">
-                  <div className="action-icon">📊</div>
-                  <div className="action-content">
-                    <h4>Mon relevé</h4>
-                    <p>Télécharger en PDF</p>
-                  </div>
-                </button>
-                <button className="action-btn">
-                  <div className="action-icon">📅</div>
-                  <div className="action-content">
-                    <h4>Emploi du temps</h4>
-                    <p>Voir le planning</p>
-                  </div>
-                </button>
+                  ))
+                )}
               </div>
             </div>
           </div>

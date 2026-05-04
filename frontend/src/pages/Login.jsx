@@ -56,14 +56,6 @@ const Login = () => {
         <p className="auth-footer">
           Pas encore de compte ? <Link to="/signup">Inscrivez-vous</Link>
         </p>
-        <div className="demo-accounts">
-          <p>Comptes de démonstration :</p>
-          <ul>
-            <li>Enseignant : prof@issatso.rnu.tn / prof123</li>
-            <li>Admin : admin@issatso.rnu.tn / admin123</li>
-            <li>Étudiant : etudiant@issatso.rnu.tn / etudiant123</li>
-          </ul>
-        </div>
       </div>
     </div>
   );
